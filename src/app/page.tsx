@@ -1,38 +1,57 @@
-import { UserAuthForm } from '@/components/user-auth-form'
-import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 
 export default function Home() {
   return (
-    <div className="bg-gray-200 h-screen w-screen flex items-center justify-center">
-      <div className="lg:p-8">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <div className="flex flex-col space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Create an account
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Enter your email below to create your account
-            </p>
-          </div>
-          <UserAuthForm />
-          <p className="px-8 text-center text-sm text-muted-foreground">
-            By clicking continue, you agree to our{' '}
-            <Link
-              href="/terms"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              Terms of Service
-            </Link>{' '}
-            and{' '}
-            <Link
-              href="/privacy"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              Privacy Policy
-            </Link>
-            .
-          </p>
+    <div className="bg-red-500 grid grid-cols-[20%_80%] h-screen w-screen">
+      {/* SideBar */}
+      <div className="bg-[#F0F0F0] flex items-center justify-center flex-col">
+        SideBar
+      </div>
+      <div className="bg-[#F0F0F0] max-w-full flex items-center justify-center flex-col">
+        <div className="w-full flex justify-end">
+          <Button size="table">Adicionar Débito</Button>
         </div>
+        <Table>
+          <TableCaption>Uma lista com todos os seus débitos</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[200px]">Nome</TableHead>
+              <TableHead className="w-[200px]">Categoria</TableHead>
+              <TableHead className="w-[100px]">Ações</TableHead>
+              <TableHead className="w-[100px]"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {[
+              { nome: 'INV001', categoria: 'Paid' },
+              { nome: 'INV002', categoria: 'Unpaid' },
+              { nome: 'INV003', categoria: 'Pending' },
+              { nome: 'INV004', categoria: 'Paid' },
+              { nome: 'INV005', categoria: 'Unpaid' }
+            ].map((item, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{item.nome}</TableCell>
+                <TableCell>{item.categoria}</TableCell>
+                <TableCell className="w-[100px] text-center">
+                  <Button size="table">Quitar</Button>
+                </TableCell>
+
+                <TableCell className="w-[100px] text-center">
+                  <Button size="table">Detalhes</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )
