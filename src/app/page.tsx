@@ -1,3 +1,6 @@
+'use client'
+
+import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -17,8 +20,65 @@ import {
   PaginationNext,
   PaginationPrevious
 } from '@/components/ui/pagination'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format, addDays } from 'date-fns'
+import { CalendarIcon } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+import { cn } from '@/lib/utils'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
+import { toast } from '@/components/ui/use-toast'
+import { DateRange } from 'react-day-picker'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover'
 
 export default function Home() {
+  {
+    /* Calendar Picker */
+  }
+  const FormSchema = z.object({
+    dob: z.date({
+      required_error: 'A date of birth is required.'
+    })
+  })
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema)
+  })
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    toast({
+      title: 'You submitted the following values:',
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      )
+    })
+  }
+
+  {
+    /* Date Range Picker */
+  }
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: new Date(2022, 0, 20),
+    to: addDays(new Date(2022, 0, 20), 20)
+  })
+
   return (
     <div className="grid grid-cols-[10%_90%] h-screen w-screen">
       {/* SideBar */}
@@ -27,15 +87,116 @@ export default function Home() {
         <div className="flex p-8 items-center">
           <div className="shadow-lg rounded-xl w-full grid grid-cols-3 gap-6">
             <div className="p-[8px] flex flex-col">
-              <label>Pesquise seus débitos</label>
+              <Label className="p-3">Pesquise seus débitos</Label>
+              <div className="flex w-full max-w-sm items-center space-x-2">
+                <Input
+                  className="w-full"
+                  type="text"
+                  placeholder="Ex: contas da casa"
+                />
+                <Button size="sm" type="submit" className="w-0">
+                  Buscar
+                </Button>
+              </div>
             </div>
             <div className="p-[8px] flex flex-col">
-              <label>Filtre seus débitos por datas</label>
-              {/* Date Picker */}
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-8 flex flex-row gap-[16px]"
+                >
+                  <FormField
+                    control={form.control}
+                    name="dob"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <Label className="p-3">
+                          Filtre seus débitos por dia
+                        </Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={'outline'}
+                                className={cn(
+                                  'w-[240px] pl-3 !m-[0px] text-left font-normal',
+                                  !field.value && 'text-muted-foreground'
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, 'PPP')
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={date =>
+                                date > new Date() ||
+                                date < new Date('1900-01-01')
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex items-end">
+                    <Button size="default" type="submit">
+                      Submit
+                    </Button>
+                  </div>
+                </form>
+              </Form>
             </div>
             <div className="p-[8px] flex flex-col">
-              <label>Outro filtro</label>
-              {/*  */}
+              <Label className="p-3">Filtre seus débitos por período</Label>
+              <div className={cn('grid gap-2')}>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id="date"
+                      variant={'outline'}
+                      className={cn(
+                        'w-[300px] justify-start text-left font-normal',
+                        !date && 'text-muted-foreground'
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date?.from ? (
+                        date.to ? (
+                          <>
+                            {format(date.from, 'LLL dd, y')} -{' '}
+                            {format(date.to, 'LLL dd, y')}
+                          </>
+                        ) : (
+                          format(date.from, 'LLL dd, y')
+                        )
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      initialFocus
+                      mode="range"
+                      defaultMonth={date?.from}
+                      selected={date}
+                      onSelect={setDate}
+                      numberOfMonths={2}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
         </div>
