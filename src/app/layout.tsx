@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header />
-        <div className="grid grid-cols-[10%_90%] h-screen w-screen">
+        <div className="grid grid-cols-[15%_85%] h-screen w-screen">
           {/* SideBar */}
           <SidebarMenu />
           {children}
