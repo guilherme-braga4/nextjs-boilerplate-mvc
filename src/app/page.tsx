@@ -80,193 +80,186 @@ export default function Home() {
   })
 
   return (
-    <div className="grid grid-cols-[10%_90%] h-screen w-screen">
-      {/* SideBar */}
-      <div className="bg-gray-100 flex flex-col">SideBar</div>
-      <div className="max-w-full h-full px-4 grid grid-rows-[10%_90%] overflow-hidden">
-        <div className="flex p-8 items-center">
-          <div className="shadow-lg rounded-xl w-full grid grid-cols-3 gap-6">
-            <div className="p-[8px] flex flex-col">
-              <Label className="p-3">Pesquise seus débitos</Label>
-              <div className="flex w-full max-w-sm items-center space-x-2">
-                <Input
-                  className="w-full"
-                  type="text"
-                  placeholder="Ex: contas da casa"
+    <div className="max-w-full h-full px-4 grid grid-rows-[10%_90%] overflow-hidden">
+      <div className="flex p-8 items-center">
+        <div className="shadow-lg rounded-xl w-full grid grid-cols-3 gap-6">
+          <div className="p-[8px] flex flex-col">
+            <Label className="p-3">Pesquise seus débitos</Label>
+            <div className="flex w-full max-w-sm items-center space-x-2">
+              <Input
+                className="w-full"
+                type="text"
+                placeholder="Ex: contas da casa"
+              />
+              <Button size="sm" type="submit" className="w-0">
+                Buscar
+              </Button>
+            </div>
+          </div>
+          <div className="p-[8px] flex flex-col">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8 flex flex-row gap-[16px]"
+              >
+                <FormField
+                  control={form.control}
+                  name="dob"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <Label className="p-3">Filtre seus débitos por dia</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={'outline'}
+                              className={cn(
+                                'w-[240px] pl-3 !m-[0px] text-left font-normal',
+                                !field.value && 'text-muted-foreground'
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, 'PPP')
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={date =>
+                              date > new Date() || date < new Date('1900-01-01')
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <Button size="sm" type="submit" className="w-0">
-                  Buscar
-                </Button>
-              </div>
-            </div>
-            <div className="p-[8px] flex flex-col">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-8 flex flex-row gap-[16px]"
-                >
-                  <FormField
-                    control={form.control}
-                    name="dob"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <Label className="p-3">
-                          Filtre seus débitos por dia
-                        </Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={'outline'}
-                                className={cn(
-                                  'w-[240px] pl-3 !m-[0px] text-left font-normal',
-                                  !field.value && 'text-muted-foreground'
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, 'PPP')
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={date =>
-                                date > new Date() ||
-                                date < new Date('1900-01-01')
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
+                <div className="flex items-end">
+                  <Button size="default" type="submit">
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+          <div className="p-[8px] flex flex-col">
+            <Label className="p-3">Filtre seus débitos por período</Label>
+            <div className={cn('grid gap-2')}>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="date"
+                    variant={'outline'}
+                    className={cn(
+                      'w-[300px] justify-start text-left font-normal',
+                      !date && 'text-muted-foreground'
                     )}
-                  />
-                  <div className="flex items-end">
-                    <Button size="default" type="submit">
-                      Submit
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </div>
-            <div className="p-[8px] flex flex-col">
-              <Label className="p-3">Filtre seus débitos por período</Label>
-              <div className={cn('grid gap-2')}>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      id="date"
-                      variant={'outline'}
-                      className={cn(
-                        'w-[300px] justify-start text-left font-normal',
-                        !date && 'text-muted-foreground'
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {date?.from ? (
-                        date.to ? (
-                          <>
-                            {format(date.from, 'LLL dd, y')} -{' '}
-                            {format(date.to, 'LLL dd, y')}
-                          </>
-                        ) : (
-                          format(date.from, 'LLL dd, y')
-                        )
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date?.from ? (
+                      date.to ? (
+                        <>
+                          {format(date.from, 'LLL dd, y')} -{' '}
+                          {format(date.to, 'LLL dd, y')}
+                        </>
                       ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      initialFocus
-                      mode="range"
-                      defaultMonth={date?.from}
-                      selected={date}
-                      onSelect={setDate}
-                      numberOfMonths={2}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
+                        format(date.from, 'LLL dd, y')
+                      )
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={date?.from}
+                    selected={date}
+                    onSelect={setDate}
+                    numberOfMonths={2}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>
-        <div className="w-full gap-8 flex flex-col">
-          <div className="w-auto h-auto m-[16px] flex justify-end items-center mx-8 gap-4">
-            <Button size="table">Adicionar Débito</Button>
-            <Button size="table">Ação XPTO</Button>
-          </div>
-          <div className="grid grid-rows-[90%_10%] pb-8 overflow-hidden">
-            <div className="flex flex-col gap-6 overflow-auto">
-              <Table>
-                <TableCaption>Uma lista com todos os seus débitos</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[200px]">Nome</TableHead>
-                    <TableHead className="w-[200px]">Categoria</TableHead>
-                    <TableHead className="w-[100px]">Ações</TableHead>
-                    <TableHead className="w-[100px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {[
-                    { nome: 'INV001', categoria: 'Paid' },
-                    { nome: 'INV002', categoria: 'Unpaid' },
-                    { nome: 'INV003', categoria: 'Pending' },
-                    { nome: 'INV004', categoria: 'Paid' },
-                    { nome: 'INV005', categoria: 'Unpaid' },
-                    { nome: 'INV001', categoria: 'Paid' },
-                    { nome: 'INV002', categoria: 'Unpaid' },
-                    { nome: 'INV003', categoria: 'Pending' },
-                    { nome: 'INV004', categoria: 'Paid' },
-                    { nome: 'INV005', categoria: 'Unpaid' },
-                    { nome: 'INV001', categoria: 'Paid' },
-                    { nome: 'INV002', categoria: 'Unpaid' },
-                    { nome: 'INV003', categoria: 'Pending' },
-                    { nome: 'INV004', categoria: 'Paid' },
-                    { nome: 'INV005', categoria: 'Unpaid' }
-                  ].map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{item.nome}</TableCell>
-                      <TableCell>{item.categoria}</TableCell>
-                      <TableCell className="w-[100px] text-center">
-                        <Button size="table">Quitar</Button>
-                      </TableCell>
+      </div>
+      <div className="w-full gap-8 flex flex-col">
+        <div className="w-auto h-auto m-[16px] flex justify-end items-center mx-8 gap-4">
+          <Button size="table">Adicionar Débito</Button>
+          <Button size="table">Ação XPTO</Button>
+        </div>
+        <div className="grid grid-rows-[90%_10%] pb-8 overflow-hidden">
+          <div className="flex flex-col gap-6 overflow-auto">
+            <Table>
+              <TableCaption>Uma lista com todos os seus débitos</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[200px]">Nome</TableHead>
+                  <TableHead className="w-[200px]">Categoria</TableHead>
+                  <TableHead className="w-[100px]">Ações</TableHead>
+                  <TableHead className="w-[100px]"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[
+                  { nome: 'INV001', categoria: 'Paid' },
+                  { nome: 'INV002', categoria: 'Unpaid' },
+                  { nome: 'INV003', categoria: 'Pending' },
+                  { nome: 'INV004', categoria: 'Paid' },
+                  { nome: 'INV005', categoria: 'Unpaid' },
+                  { nome: 'INV001', categoria: 'Paid' },
+                  { nome: 'INV002', categoria: 'Unpaid' },
+                  { nome: 'INV003', categoria: 'Pending' },
+                  { nome: 'INV004', categoria: 'Paid' },
+                  { nome: 'INV005', categoria: 'Unpaid' },
+                  { nome: 'INV001', categoria: 'Paid' },
+                  { nome: 'INV002', categoria: 'Unpaid' },
+                  { nome: 'INV003', categoria: 'Pending' },
+                  { nome: 'INV004', categoria: 'Paid' },
+                  { nome: 'INV005', categoria: 'Unpaid' }
+                ].map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{item.nome}</TableCell>
+                    <TableCell>{item.categoria}</TableCell>
+                    <TableCell className="w-[100px] text-center">
+                      <Button size="table">Quitar</Button>
+                    </TableCell>
 
-                      <TableCell className="w-[100px] text-center">
-                        <Button size="table">Detalhes</Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <div className="flex justify-end items-center mx-8">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious href="#" />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationNext href="#" />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
+                    <TableCell className="w-[100px] text-center">
+                      <Button size="table">Detalhes</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <div className="flex justify-end items-center mx-8">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">1</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           </div>
         </div>
