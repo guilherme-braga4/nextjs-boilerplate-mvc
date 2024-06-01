@@ -46,8 +46,17 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
+import { makeServer } from '../services'
 
 export default function Home() {
+  const [debts, setDebts] = React.useState([])
+
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      makeServer()
+    }
+  }, [])
+
   {
     /* Calendar Picker */
   }
@@ -78,6 +87,20 @@ export default function Home() {
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20)
   })
+
+  React.useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch('/api/debts')
+        const json = await response.json()
+        setDebts(json.debts)
+      } catch (error) {
+        console.error('Error fetching movies:', error)
+      }
+    }
+
+    fetchMovies()
+  }, [])
 
   return (
     <div className="max-w-full h-full px-4 grid grid-rows-[10%_90%] overflow-hidden">
@@ -207,31 +230,17 @@ export default function Home() {
                 <TableRow>
                   <TableHead className="w-[200px]">Nome</TableHead>
                   <TableHead className="w-[200px]">Categoria</TableHead>
+                  <TableHead className="w-[200px]">Preço Total</TableHead>
                   <TableHead className="w-[100px]">Ações</TableHead>
                   <TableHead className="w-[100px]"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {[
-                  { nome: 'INV001', categoria: 'Paid' },
-                  { nome: 'INV002', categoria: 'Unpaid' },
-                  { nome: 'INV003', categoria: 'Pending' },
-                  { nome: 'INV004', categoria: 'Paid' },
-                  { nome: 'INV005', categoria: 'Unpaid' },
-                  { nome: 'INV001', categoria: 'Paid' },
-                  { nome: 'INV002', categoria: 'Unpaid' },
-                  { nome: 'INV003', categoria: 'Pending' },
-                  { nome: 'INV004', categoria: 'Paid' },
-                  { nome: 'INV005', categoria: 'Unpaid' },
-                  { nome: 'INV001', categoria: 'Paid' },
-                  { nome: 'INV002', categoria: 'Unpaid' },
-                  { nome: 'INV003', categoria: 'Pending' },
-                  { nome: 'INV004', categoria: 'Paid' },
-                  { nome: 'INV005', categoria: 'Unpaid' }
-                ].map((item, index) => (
+                {debts.map((item: DebtInterface, index) => (
                   <TableRow key={index}>
-                    <TableCell className="font-medium">{item.nome}</TableCell>
-                    <TableCell>{item.categoria}</TableCell>
+                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell>{item.category}</TableCell>
+                    <TableCell>R$ {item.totalAmount}</TableCell>
                     <TableCell className="w-[100px] text-center">
                       <Button size="table">Quitar</Button>
                     </TableCell>
