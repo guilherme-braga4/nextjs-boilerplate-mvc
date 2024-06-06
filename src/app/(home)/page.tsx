@@ -46,7 +46,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
-import { makeServer } from '../services'
+import { makeServer } from '../../services'
 
 export default function Home() {
   const [debts, setDebts] = React.useState([])
