@@ -1,4 +1,5 @@
 'use client'
+import { createServer } from 'miragejs'
 
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
@@ -46,16 +47,43 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
-import { makeServer } from '../../services'
+// import { makeServer } from '../../services'
 
 export default function Home() {
-  const [debts, setDebts] = React.useState([])
-
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      makeServer()
+  const [debts, setDebts] = React.useState([
+    { id: 1, name: 'Cinema', category: 'Paid', totalAmount: 50.0 },
+    {
+      id: 2,
+      name: 'Restaurante',
+      category: 'Unpaid',
+      totalAmount: 120.0
+    },
+    {
+      id: 3,
+      name: 'Supermercado',
+      category: 'Pending',
+      totalAmount: 250.0
+    },
+    { id: 4, name: 'Gasolina', category: 'Paid', totalAmount: 200.0 },
+    { id: 5, name: 'Aluguel', category: 'Unpaid', totalAmount: 1500.0 },
+    { id: 6, name: 'Internet', category: 'Paid', totalAmount: 100.0 },
+    {
+      id: 7,
+      name: 'Eletricidade',
+      category: 'Unpaid',
+      totalAmount: 300.0
+    },
+    { id: 8, name: 'Água', category: 'Pending', totalAmount: 80.0 },
+    { id: 9, name: 'Telefone', category: 'Paid', totalAmount: 60.0 },
+    { id: 10, name: 'Netflix', category: 'Unpaid', totalAmount: 30.0 },
+    { id: 11, name: 'Spotify', category: 'Pending', totalAmount: 20.0 },
+    {
+      id: 12,
+      name: 'Seguro Carro',
+      category: 'Paid',
+      totalAmount: 800.0
     }
-  }, [])
+  ])
 
   {
     /* Calendar Picker */
@@ -87,20 +115,6 @@ export default function Home() {
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20)
   })
-
-  React.useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const response = await fetch('/api/debts')
-        const json = await response.json()
-        setDebts(json.debts)
-      } catch (error) {
-        console.error('Error fetching movies:', error)
-      }
-    }
-
-    fetchMovies()
-  }, [])
 
   return (
     <div className="max-w-full h-full px-4 grid grid-rows-[10%_90%] overflow-hidden">

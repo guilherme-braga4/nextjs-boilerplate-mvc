@@ -6,5 +6,5 @@ export async function handleLogin(credentials: {
   email: string
   password: string
 }) {
-  return await signIn('credentials', credentials)
+  return await signIn('credentials', { ...credentials, redirectTo: '/' })
 }

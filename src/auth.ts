@@ -1,7 +1,9 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
+import { authConfig } from '@/auth.config'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   providers: [
     Credentials({
       credentials: {
@@ -9,6 +11,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {}
       },
       authorize: async credentials => {
+        console.log('Credentials', credentials)
         // Fetch to Auth API
 
         return {
@@ -16,11 +19,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
     })
-  ],
-  session: {
-    strategy: 'jwt'
-  },
-  pages: {
-    signIn: '/auth/login'
-  }
+  ]
 })

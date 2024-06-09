@@ -45,12 +45,14 @@ export default function LoginPage() {
                   id="email"
                   placeholder="Digite seu email"
                   type={'email'}
+                  onChange={e => setEmail(e.target.value)}
                 />
                 <Label htmlFor="password">Senha</Label>
                 <Input
                   id="password"
                   placeholder="Digite sua senha"
                   type={'password'}
+                  onChange={e => setPassword(e.target.value)}
                 />
               </div>
             </div>
