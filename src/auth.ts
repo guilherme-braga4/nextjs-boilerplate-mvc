@@ -11,12 +11,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {}
       },
       authorize: async credentials => {
-        console.log('Credentials', credentials)
-        // Fetch to Auth API
+        const res = await fetch('http://localhost:3015/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(credentials)
+        })
 
-        return {
-          name: 'Gui'
+        // Verifica se a resposta não está OK antes de tentar acessar o JSON
+        if (!res.ok) {
+          console.log('Failed to login')
+          throw new Error('Failed to login')
         }
+
+        // Chama res.json() apenas uma vez
+        const user = await res.json()
+        console.log('logged in', user)
+
+        return user
       }
     })
   ]
