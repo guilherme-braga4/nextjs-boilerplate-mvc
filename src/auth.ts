@@ -10,13 +10,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: {},
         password: {}
       },
-      authorize: async credentials => {
+      authorize: async ({ email, password }) => {
         const res = await fetch('http://localhost:3015/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(credentials)
+          body: JSON.stringify({ email, password })
         })
 
         // Verifica se a resposta não está OK antes de tentar acessar o JSON

@@ -21,18 +21,37 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
+import { handleLogin } from '../actions/login.action'
 
 export default function SignUpPage() {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
 
   const router = useRouter()
 
-  const submit = (event: React.FormEvent) => {
+  const submit = async (event: React.FormEvent) => {
     event.preventDefault()
+    if (password !== passwordConfirmation) {
+      alert(`As senhas não coincidem`)
+    }
+    const response = await fetch('http://localhost:3015/auth/signUp', {
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        email,
+        phone,
+        password
+      }),
+      method: 'POST'
+    })
 
-    // Sign up the user on POST to API
-    // If user has been created, then redirect to home
+    if (response.ok) {
+      const credentials = { email, password }
+      await handleLogin(credentials)
+    } else alert('Algo errado no seu cadastro')
   }
 
   return (
@@ -49,30 +68,37 @@ export default function SignUpPage() {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-3">
                 <Label htmlFor="name">Nome</Label>
-                <Input id="name" placeholder="Digite seu nome" />
+                <Input
+                  id="name"
+                  placeholder="Digite seu nome"
+                  onChange={e => setName(e.target.value)}
+                />
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   placeholder="Digite seu email"
                   type={'email'}
+                  onChange={e => setEmail(e.target.value)}
                 />
                 <Label htmlFor="phone">Telefone</Label>
                 <Input
                   id="phone"
                   placeholder="(15) XXXXX-XXXX"
-                  type={'email'}
+                  onChange={e => setPhone(e.target.value)}
                 />
                 <Label htmlFor="password">Senha</Label>
                 <Input
                   id="password"
                   placeholder="Digite sua senha"
                   type={'password'}
+                  onChange={e => setPassword(e.target.value)}
                 />
                 <Label htmlFor="password">Confirme a sua senha</Label>
                 <Input
                   id="confirm-password"
                   placeholder="Digite sua senha"
                   type={'password'}
+                  onChange={e => setPasswordConfirmation(e.target.value)}
                 />
               </div>
             </div>
