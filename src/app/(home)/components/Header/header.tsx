@@ -1,6 +1,9 @@
-// components/Header.js
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import { signOut } from 'next-auth/react'
 
 export const Header = () => {
   return (
@@ -27,6 +30,7 @@ export const Header = () => {
             className="rounded-full"
           />
           <p>Larissa</p>
+          <Button onClick={() => signOut()}>Sair</Button>
         </div>
       </div>
     </header>
